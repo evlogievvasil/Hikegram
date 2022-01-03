@@ -1,6 +1,6 @@
 ﻿namespace Hikegram.API.Configuration
 {
-  public static class HikegramPipelineConfiguration
+  public static class PipelineConfiguration
   {
     public static void Configure(WebApplication app)
     {
@@ -13,6 +13,7 @@
       app.UseHttpsRedirection();
 
       app.UseRouting();
+
       app.UseAuthentication();
       app.UseAuthorization();
 

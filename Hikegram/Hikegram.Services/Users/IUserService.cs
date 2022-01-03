@@ -4,6 +4,6 @@ namespace Hikegram.Services.Users
 {
   public interface IUserService
   {
-    Task CreateAsync(UserCreateRequestModel model);
+    Task RegisterAsync(UserCreateRequestModel model);
   }
 }

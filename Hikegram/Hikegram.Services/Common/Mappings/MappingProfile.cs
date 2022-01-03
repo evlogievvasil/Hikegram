@@ -11,6 +11,7 @@ namespace Hikegram.Services.Common.Mappings
     public MappingProfile()
     {
       CreateMap<User, UserCreateModel>().ReverseMap();
+      CreateMap<User, UserCreateRequestModel>().ReverseMap();
       CreateMap<Event, EventCreateRequestModel>().ReverseMap();
 
     }

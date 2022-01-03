@@ -1,30 +1,36 @@
 ﻿using AutoMapper;
+using Hikegram.Data.Repositories.Users;
 using Hikegram.Services.Common;
 using Hikegram.Services.Users.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Hikegram.Services.Users
 {
   public class UserService : BaseService, IUserService
   {
-    public UserService(IMapper mapper) : base(mapper)
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+
+    public UserService(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager) : base(mapper)
     {
+      _userManager = userManager;
+      _signInManager = signInManager;
     }
 
-    public Task CreateAsync(UserCreateRequestModel model)
+    public async Task RegisterAsync(UserCreateRequestModel model)
     {
-      throw new NotImplementedException();
+      var user = _mapper.Map<User>(model);
+
+      var result = await _userManager.CreateAsync(user, model.Password);
+
+      if (result.Succeeded)
+      {
+        await _signInManager.SignInAsync(user, isPersistent: false);
+      }
+      else
+      {
+        throw new ArgumentException("Неуспешна регистрация.");
+      }
     }
-
-    //public Task CreateAsync(UserCreateRequestModel model)
-    //{
-    //  if (model.Password != model.ConfirmPassword)
-    //  {
-    //    throw new ArgumentException("Въведените пароли не съвпадат.");
-    //  }
-
-    //  var user = _mapper.Map<User>(model);
-
-
-    //}
   }
 }

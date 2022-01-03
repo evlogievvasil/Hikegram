@@ -8,11 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Hikegram.Services.Events;
 using Hikegram.Services.Users;
-using AutoMapper;
 
 namespace Hikegram.API.Configuration
 {
-  public static class HikegramServiceContainer
+  public static class ServicesContainer
   {
     public static void RegisterServices(WebApplicationBuilder builder)
     {
@@ -32,22 +31,25 @@ namespace Hikegram.API.Configuration
       builder.Services.AddIdentity<User, Role>(options =>
         {
           options.SignIn.RequireConfirmedAccount = false;
+          options.Password.RequiredLength = 8;
+          options.Password.RequireNonAlphanumeric = false;
+          options.Password.RequireUppercase = false;
+          options.User.RequireUniqueEmail = true;
         })
         .AddEntityFrameworkStores<HikegramDbContext>();
 
 
       builder.Services.AddEndpointsApiExplorer();
       builder.Services.AddSwaggerGen();
-
-      //Mapper.Initialize(cfg => cfg.AddProfile<MappingProfile>());
       builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+      // Repositories
       builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
       builder.Services.AddScoped<IEventRepository, EventRepository>();
 
+      //Services
       builder.Services.AddScoped<IEventService, EventService>();
       builder.Services.AddScoped<IUserService, UserService>();
-
     }
   }
 }

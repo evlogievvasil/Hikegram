@@ -1,4 +1,5 @@
-﻿using Hikegram.Services.Users.Models;
+﻿using Hikegram.Services.Users;
+using Hikegram.Services.Users.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hikegram.API.Controllers
@@ -7,16 +8,24 @@ namespace Hikegram.API.Controllers
   [ApiController]
   public class UsersController : ControllerBase
   {
-    [HttpPost()]
-    public IActionResult Register(UserCreateRequestModel model)
+    private readonly IUserService _userService;
+
+    public UsersController(IUserService userService)
     {
-      if (ModelState.IsValid)
+      _userService = userService;
+    }
+
+    [HttpPost()]
+    public async Task<IActionResult> Register(UserCreateRequestModel model)
+    {
+      if (!ModelState.IsValid)
       {
         return BadRequest("Невалидно подадени данни!");
       }
 
+      await _userService.RegisterAsync(model);
+
       return Ok();
     }
-
   }
 }
